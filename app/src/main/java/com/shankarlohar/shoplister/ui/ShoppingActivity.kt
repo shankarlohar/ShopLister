@@ -20,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
 import com.shankarlohar.shoplister.data.database.ShoppingDatabase
@@ -41,12 +42,23 @@ class ShoppingActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
 
-                    val database = ShoppingDatabase(this)
-                    val repository = ShoppingRepository(database)
-                    val factory = ShoppingViewModelFactory(repository)
-                    val viewModel = ViewModelProvider(this@ShoppingActivity,factory).get(ShoppingViewModel::class.java)
+//                    val database = ShoppingDatabase(this)
+//                    val repository = ShoppingRepository(database)
+//                    val factory = ShoppingViewModelFactory(repository)
+//                    val viewModel = ViewModelProvider(this@ShoppingActivity,factory)[ShoppingViewModel::class.java]
 
+                    val shoppingItems = listOf(
+                        ShoppingItem("Item 1", 10),
+                        ShoppingItem("Item 2", 5),
+                        ShoppingItem("Item 3", 3)
+                    )
 
+                    ShoppingList(
+                        shoppingItems = shoppingItems,
+                        onItemUpdate = { /* Implement item update logic */ },
+                        onItemDelete = { /* Implement item delete logic */ },
+                        onCreateItem = { /* Implement create item logic */ }
+                    )
 
 
 
@@ -64,6 +76,17 @@ fun ShoppingList(
     onCreateItem: () -> Unit
 ) {
     Column {
+
+        LazyColumn {
+            items(shoppingItems) { item ->
+                ShoppingItemRow(
+                    shoppingItem = item,
+                    onItemUpdate = onItemUpdate,
+                    onItemDelete = onItemDelete
+                )
+            }
+        }
+
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.End
@@ -73,15 +96,6 @@ fun ShoppingList(
                 modifier = Modifier.padding(8.dp)
             ) {
                 Text("Create Item")
-            }
-        }
-        LazyColumn {
-            items(shoppingItems) { item ->
-                ShoppingItemRow(
-                    shoppingItem = item,
-                    onItemUpdate = onItemUpdate,
-                    onItemDelete = onItemDelete
-                )
             }
         }
     }
@@ -129,3 +143,19 @@ fun ShoppingItemRow(
 }
 
 
+@Preview
+@Composable
+fun ShoppingListPreview() {
+    val shoppingItems = listOf(
+        ShoppingItem("Item 1", 10),
+        ShoppingItem("Item 2", 5),
+        ShoppingItem("Item 3", 3)
+    )
+
+    ShoppingList(
+        shoppingItems = shoppingItems,
+        onItemUpdate = { /* Implement item update logic */ },
+        onItemDelete = { /* Implement item delete logic */ },
+        onCreateItem = { /* Implement create item logic */ }
+    )
+}
